@@ -24,7 +24,7 @@ table sales_sample
 
 	/// Average Order Value
 	/// TODO: Calculate the average revenue per order (HINT: DIVIDE([Total Sales], DISTINCTCOUNT(sales_sample[order_id]), 0) )
-	measure 'Average Order Value' = BLANK()
+	measure 'Average Order Value' = DIVIDE([Total Sales], DISTINCTCOUNT(sales_sample[order_id]), 0)
 		formatString: "$"#,0.00
 		lineageTag: 10000000-0000-0000-0000-000000000004
 
@@ -36,21 +36,21 @@ table sales_sample
 	
 	/// Previous Month Revenue
 	/// TODO: Calculate revenue for the previous month
-	/// measure 'Previous Month Revenue' = BLANK()
-	///		formatString: "$"#,0.00
-	///		lineageTag: 10000000-0000-0000-0000-000000000005
+	measure 'Previous Month Revenue' = calculate([Total Sales], PREVIOUSMONTH(sales_sample[order_date]))
+			formatString: "$"#,0.00
+			lineageTag: 10000000-0000-0000-0000-000000000005
 
 	/// Year-to-Date Revenue
 	/// TODO: Calculate year-to-date revenue using TOTALYTD
-	/// measure 'YTD Revenue' = BLANK()
-	///		formatString: "$"#,0.00
-	///		lineageTag: 10000000-0000-0000-0000-000000000006
+	measure 'YTD Revenue' = TOTALYTD([Total Sales], sales_sample[order_date])
+			formatString: "$"#,0.00
+			lineageTag: 10000000-0000-0000-0000-000000000006
 
 	/// Revenue Growth %
 	/// TODO: Calculate percentage growth vs previous month
-	/// measure 'Revenue Growth %' = BLANK()
-	///		formatString: 0.00%;-0.00%;0.00%
-	///		lineageTag: 10000000-0000-0000-0000-000000000007
+	measure 'Revenue Growth %' = DIVIDE([Total Sales] - [Previous Month Revenue], [Previous Month Revenue], 0)
+			formatString: 0.00%;-0.00%;0.00%
+			lineageTag: 10000000-0000-0000-0000-000000000007
 
 	column order_id
 		dataType: string
